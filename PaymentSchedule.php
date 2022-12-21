@@ -20,32 +20,34 @@ class PaymentSchedule
 
             for ($i = 0; $i <= $monthInstallment; $i++)
             {
-                if ($i > 0)
+                if ($i === 0)
                 {
-                    $incrementedDate = $this->addMonthToDate($dateToInsert, $paymentDay);
-                    $schedule[$i]['date'] = $incrementedDate->format('Y-m-d');
-                    $dateToInsert = $incrementedDate;
+                    continue;
+                }
 
-                    if ($i < $monthInstallment)
-                    {
-                        $schedule[$i]['payment'] = (int)$scheduleItem['paymentInstallment'];
-                    }
-                    elseif ($i === $monthInstallment)
-                    {
-                        $schedule[$i]['payment'] = $scheduleItem['price'] -
-                            $scheduleItem['paymentInstallment'] * ($monthInstallment - 1);
-                    }
+                $incrementedDate = $this->addMonthToDate($dateToInsert, $paymentDay);
+                $schedule[$i]['date'] = $incrementedDate->format('Y-m-d');
+                $dateToInsert = $incrementedDate;
 
-                    $schedule[$i]['remain'] = $scheduleItem['price'] - $scheduleItem['paymentInstallment'] * $i;
+                if ($i < $monthInstallment)
+                {
+                    $schedule[$i]['payment'] = (int)$scheduleItem['paymentInstallment'];
+                }
+                elseif ($i === $monthInstallment)
+                {
+                    $schedule[$i]['payment'] = $scheduleItem['price'] -
+                        $scheduleItem['paymentInstallment'] * ($monthInstallment - 1);
+                }
 
-                    if ($i === 1)
-                    {
-                        $schedule[$i]['remain'] = $scheduleItem['price'] - $scheduleItem['paymentInstallment'];
-                    }
-                    elseif ($i > 1)
-                    {
-                        $schedule[$i]['remain'] = $schedule[$i - 1]['remain'] - $schedule[$i]['payment'];
-                    }
+                $schedule[$i]['remain'] = $scheduleItem['price'] - $scheduleItem['paymentInstallment'] * $i;
+
+                if ($i === 1)
+                {
+                    $schedule[$i]['remain'] = $scheduleItem['price'] - $scheduleItem['paymentInstallment'];
+                }
+                elseif ($i > 1)
+                {
+                    $schedule[$i]['remain'] = $schedule[$i - 1]['remain'] - $schedule[$i]['payment'];
                 }
             }
 
